@@ -1,0 +1,19 @@
+nginx-proxy:
+  container_name: nginx-proxy
+  image: jwilder/nginx-proxy:alpine
+  volumes:
+    - $PWD/certs:/etc/nginx/certs:ro
+    - /var/run/docker.sock:/tmp/docker.sock:ro
+  ports:
+    - "80:80"
+    - "443:443"
+  restart: always
+
+google_zmirror:
+  container_name: google_zmirror
+  image: yitiandelan/google_zmirror
+  volumes:
+    - $PWD/config.py:/var/www/zmirror/config.py
+  environment:
+    - VIRTUAL_HOST={your_host_name}
+  restart: always
