@@ -1,4 +1,4 @@
-FROM alpine
+FROM armhf/alpine
 
 MAINTAINER TIANLAN <yitiandelan@outlook.com>
 
