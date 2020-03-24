@@ -1,4 +1,5 @@
-FROM osixia/openldap
+FROM osixia/openldap:latest
 
-RUN sed -i "s/groupOfUniqueNames/groupOfNames/g" /container/service/slapd/assets/config/bootstrap/ldif/03-memberOf.ldif && \
-    sed -i "s/uniqueMember/member/g" /container/service/slapd/assets/config/bootstrap/ldif/03-memberOf.ldif
+RUN cd /container/service/slapd/assets/config/bootstrap/ldif \
+    && sed -i "s/groupOfUniqueNames/groupOfNames/g" 03-memberOf.ldif \
+    && sed -i "s/uniqueMember/member/g" 03-memberOf.ldif
