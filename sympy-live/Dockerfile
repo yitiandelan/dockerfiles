@@ -1,14 +1,21 @@
 FROM malexandre/gae:python
 
-MAINTAINER TIANLAN <yitiandelan@outlook.com>
+# TODO: [gcloud](https://cloud.google.com/appengine/docs/standard/python/quickstart)
 
-RUN apk --update --no-cache add git \
-    && git clone https://github.com/sympy/sympy-live.git /app \
-    && git clone https://github.com/sympy/sympy.git /app/sympy \
-    && git clone https://github.com/sympy/sympy-web-static.git /app/static \
-    && git clone https://github.com/fredrik-johansson/mpmath.git /app/mpmath \
-    && apk del ca-certificates libssh2 libcurl pcre git
+RUN echo "https://mirrors.ustc.edu.cn/alpine/v3.5/main" > /etc/apk/repositories \
+    && apk add --update --no-cache git openssh-client \
+    && mkdir -p /code && cd /code \
+    && git clone --depth 1 --recursive https://github.com/sympy/sympy-live.git \
+    && rm -rf sympy-live/.git
+
+FROM malexandre/gae:python
+
+LABEL maintainer "yitiandelan@outlook.com"
+
+COPY --from=0 /code/sympy-live /code
 
 EXPOSE 8080
 
-CMD $APPENGINE/dev_appserver.py --host 0.0.0.0 --skip_sdk_update_check=yes /app
+ENTRYPOINT ["dev_appserver.py"]
+
+CMD ["--host", "0.0.0.0", "--skip_sdk_update_check=yes", "/code/sympy-live/app.yaml"]
