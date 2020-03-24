@@ -1,18 +1,25 @@
-FROM alpine
+FROM alpine:3.7
 
-MAINTAINER TIANLAN <yitiandelan@outlook.com>
+LABEL maintainer "yitiandelan@outlook.com"
 
-RUN apk --update --no-cache add gcc g++ curl python3 python3-dev \
-    && apk add libc-dev && pip3 install --upgrade --no-cache-dir pip \
-    && pip3 install --no-cache-dir gunicorn gevent requests flask cchardet fastcache lru-dict \
-    && apk del gcc g++ libc-dev
+ENV APP_ROOT /code
+ENV APP_VERSION 0.29.4
 
-RUN mkdir /var/www && cd /var/www \
-    && curl -o tmp.tar.gz -L https://codeload.github.com/aploium/zmirror/tar.gz/v0.29.4 \
-    && tar -xvf tmp.tar.gz && rm tmp.tar.gz \
-    && mv zmirror-0.29.4 zmirror && cp zmirror/more_configs/config_google_and_zhwikipedia.py zmirror/config.py
+RUN echo "https://mirrors.ustc.edu.cn/alpine/v3.5/main" > /etc/apk/repositories \
+    && apk add --update --no-cache curl python3-dev gcc g++ libc-dev \
+    && rm -rf /var/cache/apk/*
+
+RUN curl -sL https://github.com/aploium/zmirror/archive/v${APP_VERSION}.tar.gz | tar -xz -C / \
+    && mkdir -p ${APP_ROOT} \
+    && mv /zmirror-${APP_VERSION} ${APP_ROOT}/zmirror \
+    && cd ${APP_ROOT}/zmirror \
+    && pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple \
+    && pip3 install --no-cache-dir -r requirements.txt \
+    && pip3 install gunicorn \
+    && cat more_configs/config_google_and_zhwikipedia.py > config.py
+
+WORKDIR ${APP_ROOT}/zmirror
 
 EXPOSE 80
 
-CMD cd /var/www/zmirror && gunicorn --bind 0.0.0.0:80 --workers 2 --worker-connections 100 wsgi:application
-
+CMD ["gunicorn", "--bind", "0.0.0.0:80", "--workers", "2", "--worker-connections", "100", "wsgi:application"]
