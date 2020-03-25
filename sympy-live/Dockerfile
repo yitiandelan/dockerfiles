@@ -5,14 +5,13 @@ FROM malexandre/gae:python
 RUN echo "https://mirrors.ustc.edu.cn/alpine/v3.5/main" > /etc/apk/repositories \
     && apk add --update --no-cache git \
     && mkdir -p /code && cd /code \
-    && git clone --depth 1 https://github.com/sympy/sympy-live.git \
+    && git clone https://github.com/sympy/sympy-live.git \
     && cd sympy-live \
-    && git checkout bcec8835 \
-    && sed -i -E 's/git[:\/@]+/https:\/\//g' .gitmodules \
-    && sed -i 's/com:/com\//g' .gitmodules \
-    && sed -i 's/\.git//g' .gitmodules
-
-RUN git submodule update --init --depth 1 \
+    && git checkout bcec883527b02209b59c8c3500e42f44de6b227d \
+    && sed -i -E "s/git[:\/@]+/https:\/\//g" .gitmodules \
+    && sed -i "s/com:/com\//g" .gitmodules \
+    && sed -i "s/\.git//g" .gitmodules \
+    && git submodule update --init --depth 1 \
     && rm -rf .git
 
 FROM malexandre/gae:python
