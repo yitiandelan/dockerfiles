@@ -10,7 +10,7 @@ LABEL com.resilio.version="2.6.4"
 
 ENV APP_VERSION 2.6.4
 
-RUN echo "https://mirrors.ustc.edu.cn/alpine/v3.5/main" > /etc/apk/repositories \
+RUN echo "https://mirrors.ustc.edu.cn/alpine/v3.7/main" > /etc/apk/repositories \
     && apk add --update --no-cache bash curl \
     && rm -rf /var/cache/apk/* \
     && curl -sL https://download-cdn.resilio.com/${APP_VERSION}/linux-x64/resilio-sync_x64.tar.gz | tar -xz -C /usr/bin rslsync \
