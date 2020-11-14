@@ -6,9 +6,9 @@
 FROM alpine:3.7
 
 LABEL maintainer "support@resilio.com"
-LABEL com.resilio.version="2.6.4"
+LABEL com.resilio.version="2.7.0"
 
-ENV APP_VERSION 2.6.4
+ENV APP_VERSION 2.7.0
 
 RUN echo "https://mirrors.ustc.edu.cn/alpine/v3.7/main" > /etc/apk/repositories \
     && apk add --update --no-cache bash curl \
