@@ -1,10 +1,10 @@
-FROM archlinux
+FROM archlinux:base-devel
 
 LABEL maintainer "yitiandelan@outlook.com"
 
-RUN curl "https://www.archlinux.org/mirrorlist/?country=CN&protocol=https" > /etc/pacman.d/mirrorlist \
+RUN curl -sL "https://archlinux.org/mirrorlist/?country=CN&protocol=https" > /etc/pacman.d/mirrorlist \
     && sed -i -E "s/^#S/S/g" /etc/pacman.d/mirrorlist \
-    && pacman -Syu --noconfirm sudo python2 \
+    && pacman -Syu --noconfirm python2 \
     && pacman -Sc --noconfirm \
     && useradd --create-home tianlan \
     && echo "tianlan ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers \
